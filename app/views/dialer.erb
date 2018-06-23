@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+      <title>
+      Call Your Representatives!
+    </title>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/tachyons.min.css">
+    <link rel="stylesheet" href="/css/extrastyles.css">
+        <script>
+        if (location.protocol != 'https:')
+        {
+         location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+        }
+    </script>
+    <script type="text/javascript"
+      src="https://media.twiliocdn.com/sdk/js/client/v1.3/twilio.min.js"></script>
+    <script type="text/javascript"
+      src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
+    </script>
+
+  <style>
+    .cf:before, .cf:after {
+    content: " ";
+    display: table;
+}
+.cf:after {
+    clear: both;
+}
+.cf {
+    *zoom: 1;
+}
+.fl {
+    float: left;
+    display: inline;
+}
+.w-100 {
+    width: 100%;
+}
+.bg-light-gray {
+    background-color: #eee;
+}
+.bg-near-white {
+    background-color: #f4f4f4;
+}
+.tc {
+    text-align: center;
+}
+@media screen and (min-width: 30em) {
+    .w-50-ns {
+        width: 50%;
+    }
+}
+</style>
+    <script type="text/javascript">
+
+    Twilio.Device.setup("<%= token %>", {debug: true});
+      <%
+              resp = HTTParty.get("https://congress.api.sunlightfoundation.com/legislators?bioguide_id=#{rep_id}")
+              resp['results'].each do | rep |
+                  name = rep['first_name'] + " " + rep['last_name']
+                  phone = rep['phone']
+      %>
+      Twilio.Device.ready(function (device) {
+        $("#log").text("Ready to Call <%= name %>");
+      });
+
+      Twilio.Device.error(function (error) {
+        $("#log").text("Error: " + error.message);
+      });
+
+      Twilio.Device.connect(function (conn) {
+        $("#log").text("Connected to the office of <%= name %>");
+      });
+
+      Twilio.Device.disconnect(function (conn) {
+        $("#log").text("Call ended");
+      });
+
+      Twilio.Device.incoming(function (conn) {
+        $("#log").text("Incoming connection from " + conn.parameters.From);
+        // accept the incoming connection and start two-way audio
+        conn.accept();
+      });
+
+
+
+      function call() {
+        // get the phone number to connect the call to
+        params = {"PhoneNumber": "<%= phone %>"};
+        Twilio.Device.connect(params);
+      }
+
+      <% end %>
+
+      function hangup() {
+        Twilio.Device.disconnectAll();
+      }
+    </script>
+  </head>
+<body class="w-100 sans-serif">
+    <main>
+
+      <section class="phm phl-ns mw7 center pvxl">
+          <%
+
+              resp = HTTParty.get("https://congress.api.sunlightfoundation.com/legislators?bioguide_id=#{rep_id}")
+              resp['results'].each do | rep |
+
+                  name = rep['first_name'] + " " + rep['last_name']
+                  phone = rep['phone']
+      %>
+        <button class='f5 f4-ns dim dib mtl br2 bg-white-10 ba b-red-40 blue-80 link pam call' onclick="call();">
+          Call <%= name %> (<%= phone %>)
+        </button>
+
+        <button class='f5 f4-ns dim dib mtl br2 bg-white-10 ba b-red-40 blue-80 link pam hangup' onclick="hangup();">
+          Hangup
+        </button>
+
+        <% end %>
+        <br /><br />
+        <div id="log">Calling...</div>
+        </section>
+        </main>
+
+      </body>
+    </html>

@@ -1,0 +1,5 @@
+call_your_reps_resource.zip
+proxy/*
+app/environment.rb
+.git/*
+app/Gemfile.lock
