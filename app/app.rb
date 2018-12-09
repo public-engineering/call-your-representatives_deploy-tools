@@ -18,7 +18,7 @@ class CallYourReps < Sinatra::Base
   use Rack::Session::Cookie
   set :environment, :production
   ENV['RACK_ENV'] = "production"
-  default_client = Faker::HeyArnold.character.downcase.tr(" ", "_")
+  default_client = Faker::HeyArnold.character.downcase.tr(" ", "_").tr(".","_")
 
   get '/' do
       erb :index
