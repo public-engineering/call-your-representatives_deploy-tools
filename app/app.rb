@@ -2,7 +2,6 @@ require 'httparty'
 require 'sinatra'
 require 'json'
 require 'twilio-ruby'
-require './environment'
 require 'thin'
 require 'faker'
 
