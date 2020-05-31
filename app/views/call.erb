@@ -65,7 +65,7 @@
 
     <%
         reps_block = ""
-        reps_block << "<h2 class='ttu tracked'>Representatives serving #{city_name}...</h2>"
+        reps_block << "<h2 class='ttu tracked'>Representatives serving #{zip_code}...</h2>"
         resp = HTTParty.get("https://congress.api.sunlightfoundation.com/legislators/locate?zip=#{params['zip_code']}")
         resp['results'].each do | rep |
             name = rep['first_name'] + " " + rep['last_name']
