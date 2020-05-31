@@ -24,10 +24,10 @@ class CallYourReps < Sinatra::Base
   end
 
   post '/reps' do
-      loc = HTTParty.get("http://maps.googleapis.com/maps/api/geocode/json?address=#{params[:zip_code]}&sensor=true")
-      loc_json = JSON.parse(loc.body)['results']
-          location_data = loc_json[0]['formatted_address'].to_s
-          erb :call, :locals => { :zip_code => params[:zip_code], :city_name => location_data }
+    #   loc = HTTParty.get("http://maps.googleapis.com/maps/api/geocode/json?address=#{params[:zip_code]}&sensor=true")
+    #   loc_json = JSON.parse(loc.body)['results']
+        #   location_data = loc_json[0]['formatted_address'].to_s
+          erb :call, :locals => { :zip_code => params[:zip_code] }
   end
 
   get '/call/:rep_id' do
