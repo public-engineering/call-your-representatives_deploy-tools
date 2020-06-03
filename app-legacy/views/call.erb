@@ -1,0 +1,103 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>
+      Call Your Representatives!
+    </title>
+    <script>
+        if (location.protocol != 'https:')
+        {
+         location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+        }
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://josephmarhee.com/assets/tachyons.css">
+    <link rel="stylesheet" href="/css/extrastyles.css">
+
+    <style>
+    .cf:before, .cf:after {
+    content: " ";
+    display: table;
+}
+.cf:after {
+    clear: both;
+}
+.cf {
+    *zoom: 1;
+}
+.fl {
+    float: left;
+    display: inline;
+}
+.divider{
+    width:5px;
+    height:auto;
+    display:inline-block;
+}
+.w-100 {
+    width: 100%;
+}
+.bg-light-gray {
+    background-color: #eee;
+}
+.bg-near-white {
+    background-color: #f4f4f4;
+}
+.tc {
+    text-align: center;
+}
+@media screen and (min-width: 30em) {
+    .w-50-ns {
+        width: 50%;
+    }
+}
+</style>
+<div id="fb-root"></div>
+
+</head>
+
+<body class="w-100 sans-serif">
+    <main>
+
+      <section class="phm phl-ns mw7 center pvxl">
+
+    <%
+        reps_block = ""
+        reps_block << "<h2 class='ttu tracked'>Representatives serving #{zip_code}...</h2>"
+        resp_house = HTTParty.get(""https://www.googleapis.com/civicinfo/v2/representatives?address=#{params['zip_code']}&levels=regional&key=#{ENV['GOOGLE_API_KEY']}"")
+        resp_senate = HTTParty.get(""https://www.googleapis.com/civicinfo/v2/representatives?address=#{params['zip_code']}&levels=country&key=#{ENV['GOOGLE_API_KEY']}"")
+        resp['officials'].each do | rep |
+            name = rep['name']
+            chamber = rep['address']
+            party = rep['party'].to_s
+            state = rep['state']
+            term_end = rep['term_end']
+            phone = rep['phone']
+            rep_id = rep['bioguide_id']
+            email = rep['oc_email']
+            contact_form =  rep['contact_form']
+           
+            reps_block << "<p class='f4 f3-ns lh-copy measure'></p>"
+            if chamber == "house"
+              reps_block << "<p class='f4 f3-ns lh-copy measure'>The #{params['zip_code']} area is served by #{rep['title']}resentative <a href='#{contact_form}'>#{name}</a> (#{party}, #{state}) in the #{chamber.capitalize} for #{state}'s <strong>#{rep['district']}</strong> district, whose term ends on #{term_end}</p>"
+            elsif chamber == "senate"
+              reps_block << "<p class='f4 f3-ns lh-copy measure'>The state of #{state} is represented by #{rep['title']}ator <a href='#{contact_form}'>#{name}</a> (#{party}, #{state}) as the #{rep['state_rank'].capitalize} Senator, whose term ends on #{term_end}</p>"
+            end
+            reps_block << "<a href='/call/#{rep_id}' class='f5 f4-ns dim dib mtl br2 bg-white-10 ba b-red-40 blue-80 link pam'>Click to Call #{name}</a>"
+            reps_block << "<div class='divider'></div>"
+            if rep['oc_email'] == nil
+              reps_block << "<a href='#{contact_form}' class='f5 f4-ns dim dib mtl br2 bg-white-10 ba b-blue-40 blue-80 link pam'>Contact #{name}</a><br /><br />"
+            elsif rep['contact_form'] == nil
+              reps_block << "<a href='mailto:#{email}' class='f5 f4-ns dim dib mtl br2 bg-white-10 ba b-blue-40 blue-80 link pam'>Email #{name}</a><br /><br />"
+            end
+            reps_block << "<br /><br /><hr /><br />"
+        end
+    %>
+
+    <%= reps_block %>
+  </section>
+  </main>
+
+</body>
