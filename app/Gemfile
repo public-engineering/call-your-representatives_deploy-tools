@@ -1,6 +1,0 @@
-source 'https://rubygems.org'
-gem 'httparty'
-gem 'sinatra'
-gem 'twilio-ruby', '4.10.0'
-gem 'thin'
-gem 'faker'
