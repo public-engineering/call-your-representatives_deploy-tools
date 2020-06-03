@@ -3,3 +3,7 @@ proxy/*
 app/environment.rb
 .git/*
 app/Gemfile.lock
+deploy/.terraform
+deploy/terraform.tfvars
+deploy/terraform.tfstate
+deploy/terraform.tfstate.backup
