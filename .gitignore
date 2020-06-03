@@ -7,3 +7,4 @@ deploy/.terraform
 deploy/terraform.tfvars
 deploy/terraform.tfstate
 deploy/terraform.tfstate.backup
+app/__pycache__/
