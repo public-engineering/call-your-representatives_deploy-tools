@@ -6,4 +6,4 @@ git clone https://gitlab.com/openfunction/public.engineering/call-your-represent
 cd app ; \
 echo " " > environment ; \
 docker build -t call-your-representatives . && \
-docker run -d --restart always --name call-your-reps -p 8080:5000 -e GOOGLE_API_KEY=${google_api_key} -e twilio_sid=${twilio_sid} -e twilio_token=${twilio_token} -e twilio_twiml_sid=${twilio_twiml_sid} -e numbers_outbound="${numbers_outbound}" call-your-representatives
+docker run -d --restart always --name call-your-reps -p 8080:5000 -e GOOGLE_API_KEY=${google_api_key} -e twilio_sid="${twilio_sid}" -e twilio_token="${twilio_token}" -e twilio_twiml_sid="${twilio_twiml_sid}" -e numbers_outbound="${numbers_outbound}" call-your-representatives
