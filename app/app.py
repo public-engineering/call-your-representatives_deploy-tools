@@ -84,10 +84,8 @@ def call():
     """Returns TwiML instructions to Twilio's POST requests"""
     response = VoiceResponse()
 
-    dial = Dial(NUMBERS_OUTBOUND)
-    # If the browser sent a phoneNumber param, we know this request
-    # is a support agent trying to call a customer's phone
-    if 'number' in request.form:
-        dial.number(number)
+    dial = Dial(callerId=NUMBERS_OUTBOUND)
+    number = request.args.get('PhoneNumber')
+    dial.number(number)
 
     return str(response.append(dial))
