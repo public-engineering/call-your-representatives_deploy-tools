@@ -6,6 +6,7 @@ from twilio.jwt.client import ClientCapabilityToken
 from twilio.twiml.voice_response import VoiceResponse, Dial
 import urllib
 import base64
+import random, string
 
 # Loading these variables will come from another module at some point.
 TWILIO_SID = os.environ['twilio_sid']
@@ -42,6 +43,10 @@ def location(zipCode):
     place = loc.json()['results'][0]['address_components'][2]['long_name'] + ", "+ loc.json()['results'][0]['address_components'][-2]['short_name']
     return { "name": place }
 
+def randomword(length):
+   letters = string.ascii_lowercase
+   return ''.join(random.choice(letters) for i in range(length))
+
 @app.route('/')
 def hello_world():
     return render_template('index.html')
@@ -51,9 +56,10 @@ def reps():
     zipCode = request.form['zip_code']
     location_name = location(zipCode)
     representatives = get_reps(zipCode)
-    return render_template('call.html', zipCode=zipCode, location=location_name, representatives=representatives)
+    client = "call-your-representatives-%s" % (randomword(8))
+    return render_template('call.html', client=client, zipCode=zipCode, location=location_name, representatives=representatives)
 
-@app.route('/support/token', methods=['GET'])
+@app.route('/token', methods=['GET'])
 def get_token():
     capability = ClientCapabilityToken(TWILIO_SID, TWILIO_TOKEN)
     capability.allow_client_outgoing(TWILIO_TWIML_SID)
