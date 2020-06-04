@@ -47,6 +47,18 @@ def randomword(length):
    letters = string.ascii_lowercase
    return ''.join(random.choice(letters) for i in range(length))
 
+def numberVerify(zipCode, unformatted_number):
+    reps = get_reps(zipCode)
+    nums_found = []
+    for r in reps:
+        if unformatted_number in r['unformatted_phone']:
+            nums_found.append(r['name'])
+            photoUrl = r['photo']
+    if len(nums_found) != 0:
+        return { 'status': 'OK', 'zipCode': zipCode, 'name': nums_found[0], 'photo': photoUrl }
+    else:
+        return { 'status': 'FAILED' }
+
 @app.route('/')
 def hello_world():
     return render_template('index.html')
@@ -71,5 +83,4 @@ def get_token():
 def voice():
     resp = VoiceResponse()
     resp.say("This is a free web-dialer from dial dot public dot engineering.", voice='alice')
-
     return str(resp)
