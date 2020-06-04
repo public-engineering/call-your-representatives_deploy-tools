@@ -66,3 +66,10 @@ def get_token():
     token = capability.to_jwt()
     # encoded = base64.encodestring(token)
     return token
+
+@app.route("/voice", methods=['GET', 'POST'])
+def voice():
+    resp = VoiceResponse()
+    resp.say("This is a free web-dialer from dial dot public dot engineering.", voice='alice')
+
+    return str(resp)
