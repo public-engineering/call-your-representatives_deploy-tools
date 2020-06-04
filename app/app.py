@@ -80,7 +80,18 @@ def get_token():
     return token
 
 @app.route("/voice", methods=['GET', 'POST'])
-def voice():
-    resp = VoiceResponse()
-    resp.say("This is a free web-dialer from dial dot public dot engineering.", voice='alice')
-    return str(resp)
+def call():
+    """Returns TwiML instructions to Twilio's POST requests"""
+    response = VoiceResponse()
+
+    dial = Dial(callerId=app.config['TWILIO_NUMBER'])
+    # If the browser sent a phoneNumber param, we know this request
+    # is a support agent trying to call a customer's phone
+    if 'phoneNumber' in request.form:
+        dial.number(request.form['phoneNumber'])
+    else:
+        # Otherwise we assume this request is a customer trying
+        # to contact support from the home page
+        dial.client('support_agent')
+
+    return str(response.append(dial))
