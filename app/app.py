@@ -82,7 +82,7 @@ def get_token():
 @app.route("/voice", methods=['GET', 'POST'])
 def call():
     """Returns TwiML instructions to Twilio's POST requests"""
-    response = Response()
+    response = VoiceResponse()
     print(request.args.get())
     dial = Dial(callerId=NUMBERS_OUTBOUND)
     number = request.args.get('Number')
