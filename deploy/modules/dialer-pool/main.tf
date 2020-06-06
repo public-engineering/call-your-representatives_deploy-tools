@@ -51,6 +51,12 @@ resource "digitalocean_loadbalancer" "public" {
     protocol = "tcp"
   }
 
+  sticky_sessions {
+    type               = "cookies"
+    cookie_name        = "call-your-reps"
+    cookie_ttl_seconds = 3600
+  }
+
   droplet_ids = [digitalocean_droplet.dialer.0.id, digitalocean_droplet.dialer.1.id]
 }
 
