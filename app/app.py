@@ -85,7 +85,7 @@ def call():
     response = VoiceResponse()
     print(request.args.get())
     dial = Dial(callerId=NUMBERS_OUTBOUND)
-    number = request.args.get('Number')
+    number = request.args.get('phoneNumber')
     dial.number(number)
 
     return str(response.append(dial))
