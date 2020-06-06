@@ -83,7 +83,7 @@ def get_token():
 def call():
     """Returns TwiML instructions to Twilio's POST requests"""
     response = VoiceResponse()
-
+    print(request.args.get())
     dial = Dial(callerId=NUMBERS_OUTBOUND)
     number = request.args.get('Number')
     dial.number(number)
