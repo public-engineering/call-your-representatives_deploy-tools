@@ -34,6 +34,7 @@ def get_reps(zipCode):
         unformatted_phone = item['phones'][0]
         p_phone = urllib.parse.quote(phone)
         p_unformatted_phone = urllib.parse.quote(unformatted_phone)
+        p_name = urllib.parse.quote(name)
         urls = item['urls'][0]
         officials.append({'name': name, 'office': office, 'phone': phone, 'unformatted_phone': unformatted_phone, 'urls': urls, 'party': party, 'photo': photo, 'p_phone': p_phone, 'p_unformatted_phone': p_unformatted_phone})
     return officials
@@ -46,6 +47,8 @@ def location(zipCode):
 def randomword(length):
    letters = string.ascii_lowercase
    return ''.join(random.choice(letters) for i in range(length))
+
+default_client = "call-your-representatives-%s" % (randomword(8))
 
 def numberVerify(zipCode, unformatted_number):
     reps = get_reps(zipCode)
@@ -68,26 +71,35 @@ def reps():
     zipCode = request.form['zip_code']
     location_name = location(zipCode)
     representatives = get_reps(zipCode)
+    client = default_client
+    return render_template('call.html', client=client, zipCode=zipCode, location=location_name, representatives=representatives)
+
+@app.route('/dialer', methods=['GET', 'POST'])
+def start_call():
+    phone = request.args.get('number')
     client = "call-your-representatives-%s" % (randomword(8))
-    token = get_token()
-    print(representatives)
-    return render_template('call.html', token=token, client=client, zipCode=zipCode, location=location_name, representatives=representatives)
+    return render_template('dial.html', client=client, phone=phone)
 
 @app.route('/token', methods=['GET'])
 def get_token():
     capability = ClientCapabilityToken(TWILIO_SID, TWILIO_TOKEN)
     capability.allow_client_outgoing(TWILIO_TWIML_SID)
+    capability.allow_client_incoming(default_client)
     token = capability.to_jwt()
     # encoded = base64.encodestring(token)
     return token
 
-@app.route("/voice", methods=['GET', 'POST'])
+@app.route("/voice", methods=['POST'])
 def call():
     """Returns TwiML instructions to Twilio's POST requests"""
     response = VoiceResponse()
-    print(request.args.get())
+    number = ""
+    dict = request.form
+    for value in dict:
+        if dict[value].startswith('number'):
+            number = dict[value].split(":")[-1]
+    phone_number = request.args.get('number:%s' %(number)) or default_client
     dial = Dial(callerId=NUMBERS_OUTBOUND)
-    number = request.args.get('Number')
+    print(number)
     dial.number(number)
-
     return str(response.append(dial))
