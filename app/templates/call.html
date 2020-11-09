@@ -26,19 +26,19 @@
         //     //     // Set up the Twilio Client Device with the token
         //     //     Twilio.Device.setup(data);
         //     // });
-        //     // function httpGet(Url)
-        //     // {
-        //     //     var xmlHttp = new XMLHttpRequest();
-        //     //     xmlHttp.open( "GET", Url, false ); // false for synchronous request
-        //     //     xmlHttp.send( null );
-        //     //     return xmlHttp.responseText;
-        //     // }
+            function httpGet(Url)
+            {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open( "GET", Url, false ); // false for synchronous request
+                xmlHttp.send( null );
+                return xmlHttp.responseText;
+            }
 
-        //     // var token = httpGet("/token");
+            var token = httpGet("/token");
 
         //     Twilio.Device.setup("{{ token }}", {debug: true});
         // });
-        Twilio.Device.setup("{{ token }}", {debug: true});
+        Twilio.Device.setup(token, {debug: true});
 
         Twilio.Device.ready(function (device) {
             $("#log").text("Client {{ client }} is ready");
