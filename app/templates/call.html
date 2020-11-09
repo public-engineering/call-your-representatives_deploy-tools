@@ -21,12 +21,24 @@
     <script type="text/javascript">
     {%block dialer %}
 
-        $(document).ready(function() {
-            $.get("/token", {forPage: window.location.pathname}, function(data) {
-                // Set up the Twilio Client Device with the token
-                Twilio.Device.setup(data);
-            });
-        });
+        // $(document).ready(function() {
+        //     // $.get("/token", {forPage: window.location.pathname}, function(data) {
+        //     //     // Set up the Twilio Client Device with the token
+        //     //     Twilio.Device.setup(data);
+        //     // });
+        //     // function httpGet(Url)
+        //     // {
+        //     //     var xmlHttp = new XMLHttpRequest();
+        //     //     xmlHttp.open( "GET", Url, false ); // false for synchronous request
+        //     //     xmlHttp.send( null );
+        //     //     return xmlHttp.responseText;
+        //     // }
+
+        //     // var token = httpGet("/token");
+
+        //     Twilio.Device.setup("{{ token }}", {debug: true});
+        // });
+        Twilio.Device.setup("{{ token }}", {debug: true});
 
         Twilio.Device.ready(function (device) {
             $("#log").text("Client {{ client }} is ready");
@@ -69,8 +81,11 @@
             {% endblock %}
 
             {%for r in representatives %}
+                {% set phone_number = r['phone'] %}
+                {% set unformatted_number = r['unformatted_number'] %}
+                {% set unformatted_number = r['unformatted_number'] %}
                 <p class='f4 f3-ns lh-copy measure'>Your area is represented by <a href="{{r['urls']}}">{{r['name']}}</a> ({{r['party']}}) as your {{ r['office'] }}.</p>
-                <button class='f5 f4-ns dim dib mtl br2 bg-white-10 ba b-red-40 blue-80 link pam call call-customer-button' onclick="call('{{number}}');">
+                <button class='f5 f4-ns dim dib mtl br2 bg-white-10 ba b-red-40 blue-80 link pam call call-customer-button' onclick="call({{phone_number}});">
                     Call {{ unformatted_number }}
                 </button>
                 <button class='f5 f4-ns dim dib mtl br2 bg-white-10 ba b-red-40 blue-80 link pam hangup hangup-button' onclick="hangup();">

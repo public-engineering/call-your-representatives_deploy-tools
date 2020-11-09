@@ -17,6 +17,13 @@ GOOGLE_API_KEY = os.environ['GOOGLE_API_KEY']
 
 app = Flask(__name__)
 
+def get_token():
+    capability = ClientCapabilityToken(TWILIO_SID, TWILIO_TOKEN)
+    capability.allow_client_outgoing(TWILIO_TWIML_SID)
+    token = capability.to_jwt()
+    # encoded = base64.encodestring(token)
+    return token
+
 # These will need to go into their own module at some point.
 def get_reps(zipCode):
     officials = []
@@ -69,15 +76,17 @@ def reps():
     location_name = location(zipCode)
     representatives = get_reps(zipCode)
     client = "call-your-representatives-%s" % (randomword(8))
-    return render_template('call.html', client=client, zipCode=zipCode, location=location_name, representatives=representatives)
+    token = get_token()
+    print(representatives)
+    return render_template('call.html', token=token, client=client, zipCode=zipCode, location=location_name, representatives=representatives)
 
-@app.route('/token', methods=['GET'])
-def get_token():
-    capability = ClientCapabilityToken(TWILIO_SID, TWILIO_TOKEN)
-    capability.allow_client_outgoing(TWILIO_TWIML_SID)
-    token = capability.to_jwt()
-    # encoded = base64.encodestring(token)
-    return token
+# @app.route('/token', methods=['GET'])
+# def get_token():
+#     capability = ClientCapabilityToken(TWILIO_SID, TWILIO_TOKEN)
+#     capability.allow_client_outgoing(TWILIO_TWIML_SID)
+#     token = capability.to_jwt()
+#     # encoded = base64.encodestring(token)
+#     return token
 
 @app.route("/voice", methods=['GET', 'POST'])
 def call():
@@ -85,7 +94,7 @@ def call():
     response = VoiceResponse()
     print(request.args.get())
     dial = Dial(callerId=NUMBERS_OUTBOUND)
-    number = request.args.get('phoneNumber')
+    number = request.args.get('Number')
     dial.number(number)
 
     return str(response.append(dial))
