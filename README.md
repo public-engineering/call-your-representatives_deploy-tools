@@ -1,6 +1,8 @@
 Call Your Representatives
 ===
 
+<img src="https://img.shields.io/liberapay/patrons/~1532295.svg?logo=liberapay"> <img src="https://img.shields.io/liberapay/goal/~1532295.svg?logo=liberapay"> 
+
 An application to provide browser-based calls to members of congress via Twilio. The operator can fill up a Twilio account, enter their credentials into the app's `app/environment.rb` and run this site to provide a free way for their community (via libraries, and other public computers) to contact Congress.
 
 **Note** This is a very rudimentary app, and I am not a web developer, so I'd like to open this up for others to contribute to and adopt to service this initiative!
